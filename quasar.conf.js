@@ -22,6 +22,8 @@ module.exports = function(/* ctx */) {
       "i18n",
       "axios",
       "main",
+      "global-component",
+      "defined",
       "permission" // 将 permissionWithDynamicRouter（后端传回的动态路由鉴权工具） 替换 permission （默认前端鉴权工具）
     ],
 
@@ -108,7 +110,7 @@ module.exports = function(/* ctx */) {
       // you can manually specify Quasar components/directives to be available everywhere:
       //
 
-      components: ["QSpinnerGrid"],
+      components: ["QSpinnerGrid", "QInput", "QSelect", "QAvatar", "QChip"],
 
       directives: ["ClosePopup", "Ripple"],
 

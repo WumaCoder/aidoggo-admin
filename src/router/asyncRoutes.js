@@ -53,7 +53,7 @@ const asyncRoutesChildren = [
         name: "UserRoute",
         meta: {
           roles: ["admin", "editor"],
-          title: "路由管理",
+          title: "权限管理",
           icon: "link",
           keepAlive: true
         },
@@ -77,7 +77,7 @@ const asyncRoutesChildren = [
         name: "ServiceDocker",
         meta: {
           roles: ["admin", "editor"],
-          title: "Docker管理",
+          title: "容器管理",
           icon: "view_module",
           keepAlive: true
         },
@@ -90,6 +90,18 @@ const asyncRoutesChildren = [
           roles: ["admin", "editor"],
           title: "配置管理",
           icon: "format_list_bulleted",
+          keepAlive: true
+        },
+        component: () => import("../pages/service/config")
+      },
+      {
+        path: "route",
+        name: "ServiceRoute",
+        meta: {
+          roles: ["admin", "editor"],
+          title: "路由管理",
+          icon: "alt_route",
+          isHidden: true,
           keepAlive: true
         },
         component: () => import("../pages/service/config")
@@ -130,6 +142,16 @@ const asyncRoutesChildren = [
         component: () => import("../pages/image/apply")
       }
     ]
+  },
+  {
+    path: "/material",
+    name: "Material",
+    meta: {
+      roles: ["admin", "editor"],
+      title: "文章管理",
+      icon: "book"
+    },
+    component: () => import("../pages/material/material")
   },
   {
     path: "/message",

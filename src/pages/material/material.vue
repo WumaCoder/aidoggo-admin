@@ -28,19 +28,24 @@ export default {
   data() {
     return {
       form: {
-        sendUserId: {
+        name: {
           is: "q-input",
           type: "text"
         },
-        targetUserId: {
+        type: {
           is: "q-input",
           type: "text"
         },
-        title: {
+        tags: {
           is: "q-input",
           type: "text"
         },
-        body: {
+        url: {
+          is: "q-input",
+          type: "text",
+          label: "图片地址"
+        },
+        description: {
           is: "q-input",
           type: "textarea",
           label: "内容"
@@ -57,18 +62,18 @@ export default {
           searchModify: "@="
         },
         {
-          name: "sendUserId",
+          name: "name",
           required: true,
-          label: "发送用户ID",
-          field: row => row.sendUserId,
+          label: "标题",
+          field: row => row.name,
           sortable: true,
           searchModify: "@Like"
         },
         {
-          name: "targetUserId",
+          name: "tags",
           required: true,
-          label: "目标用户ID",
-          field: row => row.targetUserId,
+          label: "标签",
+          field: row => row.tags,
           sortable: true,
           searchModify: "@Like"
         },
@@ -76,22 +81,14 @@ export default {
           name: "type",
           required: true,
           label: "类型",
-          field: row => (row.type ? "用户" : "系统"),
-          sortable: true,
-          searchModify: "@Like"
-        },
-        {
-          name: "title",
-          required: true,
-          label: "标题",
-          field: row => row.title,
+          field: row => (row.type ? "用户" : "识别"),
           sortable: true,
           searchModify: "@Like"
         },
         {
           name: "createdAt",
           required: true,
-          label: "发送时间",
+          label: "创建时间",
           field: row => row.createdAt,
           sortable: true,
           searchModify: "@Like"

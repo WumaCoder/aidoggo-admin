@@ -86,14 +86,14 @@
             class="cimo-shadow text-center"
             style="height: 430px; width: 100%; padding: 3px"
           >
-          <div class="q-pa-md">
-            <q-table
-              title="日志"
-              :data="data"
-              :columns="columns"
-              row-key="name"
-            />
-          </div>
+            <div class="q-pa-md">
+              <q-table
+                title="日志"
+                :data="data"
+                :columns="columns"
+                row-key="name"
+              />
+            </div>
           </q-card>
         </div>
       </div>
@@ -102,24 +102,22 @@
 </template>
 
 <script>
-import countTo from 'vue-count-to'
-import BaseContent from '../../components/BaseContent/BaseContent'
-import { thumbStyle } from 'components/BaseContent/ThumbStyle'
-import chartPie from '../../assets/js/echarts-1'
-import chartPiePhone from '../../assets/js/echarts-phone'
-import chartPieSex from '../../assets/js/echarts-sex'
-import chartPieAge from '../../assets/js/echarts-age'
-import charts2Option from '../../assets/js/echarts-2'
-import { income, expense, total } from '../../assets/js/echarts-3'
-import chartZ from '../../assets/js/echarts-4'
+import countTo from "vue-count-to";
+import { thumbStyle } from "components/BaseContent/ThumbStyle";
+import chartPie from "../../assets/js/echarts-1";
+import chartPiePhone from "../../assets/js/echarts-phone";
+import chartPieSex from "../../assets/js/echarts-sex";
+import chartPieAge from "../../assets/js/echarts-age";
+import charts2Option from "../../assets/js/echarts-2";
+import { income, expense, total } from "../../assets/js/echarts-3";
+import chartZ from "../../assets/js/echarts-4";
 
 export default {
-  name: 'home',
+  name: "home",
   components: {
-    BaseContent,
     countTo
   },
-  data () {
+  data() {
     return {
       chartPiePhone,
       chartPieSex,
@@ -133,87 +131,101 @@ export default {
       total,
       thumbStyle,
       lorem:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      filter: '',
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      filter: "",
       columns: [
         {
-          name: 'createdAt',
-          label: '时间',
-          field: 'createdAt'
+          name: "createdAt",
+          label: "时间",
+          field: "createdAt"
         },
         {
-          name: 'message',
-          label: '消息',
-          field: 'message'
+          name: "message",
+          label: "消息",
+          field: "message"
         },
         {
-          name: 'level',
-          label: '级别',
-          field: 'level'
+          name: "level",
+          label: "级别",
+          field: "level"
         },
         {
-          name: 'loc',
-          label: '位置',
-          field: 'loc'
+          name: "loc",
+          label: "位置",
+          field: "loc"
         }
       ],
       data: [
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
+          loc: "/login"
         },
         {
-          createdAt: new Date(Date.now() + 2*Math.floor(Math.random() * 1000)).toLocaleString(),
-          message: '管理员登录',
+          createdAt: new Date(
+            Date.now() + 2 * Math.floor(Math.random() * 1000)
+          ).toLocaleString(),
+          message: "管理员登录",
           level: 1,
-          loc: '/login'
-        },
+          loc: "/login"
+        }
       ]
-    }
+    };
   },
   methods: {
-    handleTableClick (e) {
+    handleTableClick(e) {
       this.$router.push({
-        path: 'tableDetail',
+        path: "tableDetail",
         query: {
           id: e.name
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style lang="css" scoped>
 .my-card {

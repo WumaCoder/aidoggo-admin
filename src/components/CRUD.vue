@@ -20,6 +20,7 @@
             ref="form"
             :form="form"
             :columns="columns"
+            :showButton="showButtons"
             @submit="onSubmitForm"
           />
         </q-card-section>
@@ -30,8 +31,9 @@
       :selection="showButtons ? 'multiple' : 'none'"
       row-key="id"
       binary-state-sort
+      flat
       :hide-header="false"
-      :grid="false"
+      :grid="isGrid"
       :data="data"
       :columns="columns"
       :pagination.sync="pagination"
@@ -44,6 +46,7 @@
       <template v-if="showButtons" v-slot:top-left>
         <q-btn-group class="q-mr-sm">
           <q-btn
+            v-if="isCreateBtn"
             color="primary"
             label="新建"
             size="13px"
@@ -88,20 +91,36 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:body-cell="props">
+        <q-td :props="props">
+          <component
+            :is="props.col.is || 'cell-text'"
+            :value="props.value"
+            v-bind="props.col.bindProps && props.col.bindProps(props.row)"
+          ></component>
+        </q-td>
+      </template>
     </q-table>
   </div>
 </template>
 
 <script>
-import FormBox from "./FormBox";
+import FormBox from "./FormBox.vue";
+import BaseForm from "./BaseForm";
+
 export default {
   components: {
-    FormBox
+    FormBox,
+    ...BaseForm
   },
   props: {
-    props: {
-      type: Object,
-      default: null
+    isGrid: {
+      type: Boolean,
+      default: false
+    },
+    isCreateBtn: {
+      type: Boolean,
+      default: true
     },
     showButtons: {
       type: Boolean,
@@ -161,13 +180,13 @@ export default {
         const { page, rowsPerPage, sortBy, descending } = props.pagination;
         props.filterField = this.searchField;
         this.loading = true;
-        const rets = await this.onSelect(props);
-        this.data = rets.data;
+        const rets = await this.onSelect(this.tranfromCrudParams(props));
+        this.data = rets.list;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
         this.pagination.sortBy = sortBy;
         this.pagination.descending = descending;
-        this.pagination.rowsNumber = rets.count;
+        this.pagination.rowsNumber = rets.total;
         this.loading = false;
       } catch (e) {
         console.dir(e);
@@ -221,8 +240,7 @@ export default {
         this.$q.notify("删除数据成功");
       } catch (e) {
         console.dir(e);
-        const message =
-          (e.graphQLErrors && e.graphQLErrors[0].message.message) || e.message;
+        const message = e.message;
         this.$q.notify({ message, color: "red" });
       }
     },
@@ -242,6 +260,17 @@ export default {
         pagination: this.pagination,
         filter: this.searchValue
       });
+    },
+    tranfromCrudParams({ pagination, filterField, filter }) {
+      return {
+        page: `${pagination.page}:${pagination.rowsPerPage}`,
+        order: `${pagination.sortBy}:${pagination.descending ? "DESC" : "ASC"}`,
+        where: `${filterField}${this.findColumn(filterField).searchModify ||
+          ""}:${filter}`
+      };
+    },
+    findColumn(key) {
+      return this.columns.find(res => res.name === key);
     }
   },
   created() {
