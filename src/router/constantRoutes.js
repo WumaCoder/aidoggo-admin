@@ -3,24 +3,24 @@
  */
 const constantRoutes = [
   {
-    path: '/logon',
-    name: 'logon',
+    path: "/logon",
+    name: "logon",
     meta: {
-      title: '登录'
+      title: "登录"
     },
-    component: () => import('../pages/logon/logon.vue')
+    component: () => import("../pages/logon/logon.vue")
   },
   {
-    path: '/NoFound404',
-    name: 'NoFound404',
+    path: "/NoFound404",
+    name: "NoFound404",
     meta: {
-      roles: ['admin', 'editor'],
-      title: '404',
-      icon: 'sentiment_dissatisfied',
+      roles: ["admin", "editor"],
+      title: "404",
+      icon: "sentiment_dissatisfied",
       isHidden: true
     },
-    component: () => import('../components/404/NoFound404')
+    component: () => import("../components/404/NoFound404")
   }
-]
+];
 
-export default constantRoutes
+export default constantRoutes;

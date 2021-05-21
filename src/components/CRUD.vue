@@ -43,7 +43,7 @@
       @row-click="onRowClick"
       @request="onRequest"
     >
-      <template v-if="showButtons" v-slot:top-left>
+      <template v-if="showButtons || Object.keys(form).length" v-slot:top-left>
         <q-btn-group class="q-mr-sm">
           <q-btn
             v-if="isCreateBtn"
@@ -65,7 +65,7 @@
           />
         </q-btn-group>
       </template>
-      <template v-slot:top-right>
+      <template v-if="showSearchBox" v-slot:top-right>
         <q-input
           outlined
           dense
@@ -117,6 +117,10 @@ export default {
     isGrid: {
       type: Boolean,
       default: false
+    },
+    showSearchBox: {
+      type: Boolean,
+      default: true
     },
     isCreateBtn: {
       type: Boolean,
@@ -186,7 +190,7 @@ export default {
         this.pagination.rowsPerPage = rowsPerPage;
         this.pagination.sortBy = sortBy;
         this.pagination.descending = descending;
-        this.pagination.rowsNumber = rets.total;
+        this.pagination.rowsNumber = rets.count ?? rets.total;
         this.loading = false;
       } catch (e) {
         console.dir(e);
@@ -207,11 +211,11 @@ export default {
             break;
           case "upt":
             {
-              const data = await this.onUpdate(this.updateId, formData);
+              await this.onUpdate(this.updateId, formData);
               const index = this.data.findIndex(
                 item => item.id === this.updateId
               );
-              this.$set(this.data, index, data);
+              this.$set(this.data, index, { id: this.updateId, ...formData });
               this.dialog = false;
               this.$q.notify("修改数据成功");
             }
@@ -227,15 +231,17 @@ export default {
     async onClickDelete() {
       try {
         this.loading = true;
-        await this.onDelete(this.selected);
-        this.selected.forEach(item => {
+        for (let i = 0; i < this.selected.length; i++) {
+          const item = this.selected[i];
+          await this.onDelete(item.id);
           const id = item.id;
           const index = this.data.findIndex(item => item.id === id);
           if (index !== -1) {
             this.data.splice(index, 1);
             this.pagination.rowsNumber--;
           }
-        });
+        }
+
         this.loading = false;
         this.$q.notify("删除数据成功");
       } catch (e) {
@@ -249,6 +255,9 @@ export default {
       this.dialogType = "new";
     },
     async onRowClick(e, row) {
+      if (!Object.keys(this.form).length) {
+        return;
+      }
       this.dialog = true;
       this.dialogType = "upt";
       this.updateId = row.id;
@@ -262,12 +271,15 @@ export default {
       });
     },
     tranfromCrudParams({ pagination, filterField, filter }) {
-      return {
+      const crudParams = {
         page: `${pagination.page}:${pagination.rowsPerPage}`,
-        order: `${pagination.sortBy}:${pagination.descending ? "DESC" : "ASC"}`,
-        where: `${filterField}${this.findColumn(filterField).searchModify ||
-          ""}:${filter}`
+        order: `${pagination.sortBy}:${pagination.descending ? "DESC" : "ASC"}`
       };
+      if (filter) {
+        const col = this.findColumn(filterField) || { searchModify: "@=" };
+        crudParams.where = `${filterField}${col.searchModify}:${filter}`;
+      }
+      return crudParams;
     },
     findColumn(key) {
       return this.columns.find(res => res.name === key);
@@ -275,7 +287,7 @@ export default {
   },
   created() {
     // get initial data from server (1st page)
-    this.searchField = this.columns[0].name;
+    this.searchField = this.columns.length > 0 ? this.columns[0].name : "id";
     this.onRequest({
       pagination: this.pagination,
       filter: this.searchValue

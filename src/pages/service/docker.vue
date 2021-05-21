@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="true"
     ></CRUD>
   </base-content>
@@ -12,44 +15,6 @@
 <script>
 import CRUD from "components/CRUD.vue";
 
-const routes = [
-  {
-    id: 1,
-    name: "AI服务",
-    uri: "172.0.2.1",
-    expose: "5000/tcp",
-    type: 0,
-    image: "serive-ai:1.0.0",
-    cid: "adfaf7a8d7f89",
-    routes: []
-  },
-  {
-    id: 2,
-    name: "Auth服务",
-    uri: "172.0.2.1",
-    expose: "6000/tcp",
-    type: 0,
-    image: "serive-auth:1.0.0",
-    cid: "adfaf7a8d7f89",
-    routes: [
-      {
-        id: 1,
-        method: "GET",
-        matched: "/login"
-      },
-      {
-        id: 2,
-        method: "GET",
-        matched: "/login"
-      },
-      {
-        id: 3,
-        method: "GET",
-        matched: "/login"
-      }
-    ]
-  }
-];
 export default {
   components: { CRUD },
   data() {
@@ -59,13 +24,23 @@ export default {
           is: "q-input",
           type: "text"
         },
-        uri: {
+        host: {
           is: "q-input",
           type: "url"
         },
+        port: {
+          is: "q-input",
+          type: "url"
+        },
+        rpcPort: {
+          is: "q-input",
+          type: "url",
+          label: "远程调用接口"
+        },
         expose: {
           is: "q-input",
-          type: "text"
+          type: "text",
+          label: "暴露端口"
         },
         image: {
           is: "q-input",
@@ -97,18 +72,18 @@ export default {
           searchModify: "@Like"
         },
         {
-          name: "uri",
+          name: "host",
           required: true,
           label: "地址",
-          field: row => row.uri,
+          field: row => row.host,
           sortable: true,
           searchModify: "@Like"
         },
         {
-          name: "expose",
+          name: "port",
           required: true,
           label: "端口",
-          field: row => row.expose,
+          field: row => row.port,
           format: val => `${val}`,
           sortable: true,
           searchModify: "@Like"
@@ -117,7 +92,8 @@ export default {
           name: "type",
           required: true,
           label: "类型",
-          field: row => (row.type ? "业务" : "核心"),
+          field: row => row.type,
+          bindProps: row => ({ label: row.type === 0 ? "核心" : "业务" }),
           sortable: true,
           searchModify: "@Like",
           is: "q-chip"
@@ -127,7 +103,7 @@ export default {
           required: true,
           label: "镜像",
           field: row => row.image,
-          format: val => `${val}`,
+          format: val => `${val || "-"}`,
           sortable: true,
           searchModify: "@Like"
         },
@@ -136,27 +112,33 @@ export default {
           required: true,
           label: "容器ID",
           field: row => row.cid,
-          format: val => `${val}`,
+          format: val => `${val || "-"}`,
           sortable: true,
           searchModify: "@Like"
-        },
-        {
-          name: "routes",
-          required: true,
-          label: "路由",
-          field: row => row.routes,
-          format: val => `点击查看(${val.length})`,
-          searchModify: "@Like"
         }
+        // {
+        //   name: "routes",
+        //   required: true,
+        //   label: "路由",
+        //   field: row => row.routes,
+        //   format: val => `点击查看(${val.length})`,
+        //   searchModify: "@Like"
+        // }
       ]
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: routes,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Service.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Service.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Service.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Service.del(id);
     }
   }
 };

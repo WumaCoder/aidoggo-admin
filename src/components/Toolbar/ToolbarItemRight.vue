@@ -5,10 +5,12 @@
         <div class="row no-wrap q-pa-md">
           <div class="column items-center">
             <q-avatar size="72px">
-              <img :src="this.$PUBLIC_PATH + 'data/avatar.jpg'" />
+              <img :src="$store.state.currentUser.avatar" />
             </q-avatar>
 
-            <div class="text-subtitle1 q-mt-md q-mb-xs">Hi！ CIMO</div>
+            <div class="text-subtitle1 q-mt-md q-mb-xs">
+              {{ $store.state.currentUser.nick }}
+            </div>
 
             <q-btn
               color="primary"
@@ -21,20 +23,10 @@
         </div>
       </q-menu>
       <q-avatar size="26px">
-        <img :src="this.$PUBLIC_PATH + 'data/avatar.jpg'" />
+        <img :src="$store.state.currentUser.avatar" />
       </q-avatar>
       <q-tooltip>账号</q-tooltip>
     </q-btn>
-    <div class="electron-only">
-      <q-btn dense flat icon="minimize" @click="minimize" />
-      <q-btn
-        dense
-        flat
-        :icon="isMaximize ? 'crop_square' : 'flip_to_front'"
-        @click="maximize"
-      />
-      <q-btn dense flat icon="close" @click="closeApp" />
-    </div>
   </div>
 </template>
 
@@ -84,10 +76,6 @@ export default {
       this.$store.commit("LOGOUT");
       this.$router.push("/");
       window.sessionStorage.clear();
-      if (process.env.MODE === "electron") {
-        this.$q.electron.remote.getCurrentWindow().setSize(500, 490);
-        this.$q.electron.remote.getCurrentWindow().center();
-      }
     },
 
     // electron

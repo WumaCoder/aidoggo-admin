@@ -4,7 +4,8 @@
       <q-select
         class="full-width"
         filled
-        v-model="value"
+        :value="value"
+        @input="$emit('input', $event)"
         use-chips
         :label="label"
         :options="options"

@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
@@ -12,15 +15,6 @@
 <script>
 import CRUD from "components/CRUD.vue";
 
-const routes = [
-  {
-    id: 1,
-    name: "AUTH_SERVICE_PORT",
-    value: "3306",
-    type: 1,
-    description: "认证服务端口"
-  }
-];
 export default {
   components: { CRUD },
   data() {
@@ -89,11 +83,17 @@ export default {
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: routes,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Config.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Config.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Config.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Config.del(id);
     }
   }
 };

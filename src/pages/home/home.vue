@@ -3,53 +3,71 @@
     <div class="container q-pa-lg q-col-gutter-md">
       <div class="row justify-between q-col-gutter-md">
         <div class="col-xs-12 col-md-3 q-gutter-md">
-          <q-card class="income ">
+          <q-card class="newUser ">
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
                   新增用户
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
-                  <countTo :startVal="1" :endVal="1" :duration="1500" />
+                  <countTo
+                    :startVal="1"
+                    :endVal="
+                      chartData.newUser[chartData.newUser.length - 1] || 0
+                    "
+                    :duration="1500"
+                  />
                 </div>
               </q-card-section>
               <q-card-section class="col">
                 <div style="height: 100%;max-width: 150px">
-                  <v-chart :options="income" />
+                  <v-chart :options="charts.newUser(chartData.newUser)" />
                 </div>
               </q-card-section>
             </q-card-section>
           </q-card>
-          <q-card class="expense ">
+          <q-card class="activeUser ">
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
                   活跃用户
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
-                  <countTo :startVal="1" :endVal="10" :duration="1500" />
+                  <countTo
+                    :startVal="1"
+                    :endVal="
+                      chartData.activeUser[chartData.activeUser.length - 1] || 0
+                    "
+                    :duration="1500"
+                  />
                 </div>
               </q-card-section>
               <q-card-section class="col">
                 <div style="height: 100%;width: 150px">
-                  <v-chart :options="expense" />
+                  <v-chart :options="charts.activeUser(chartData.activeUser)" />
                 </div>
               </q-card-section>
             </q-card-section>
           </q-card>
-          <q-card class="total ">
+          <q-card class="totalUser ">
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
-                  所有用户
+                  现存用户
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
-                  <countTo :startVal="1" :endVal="11" :duration="1500" />
+                  <countTo
+                    :startVal="1"
+                    :endVal="
+                      chartData.totalUser[chartData.totalUser.length - 1] || 0
+                    "
+                    :duration="1500"
+                  />
                 </div>
               </q-card-section>
               <q-card-section class="col">
                 <div style="height: 100%;width: 150px">
-                  <v-chart class="" :options="total" />
+                  <v-chart :options="charts.totalUser(chartData.totalUser)" />
                 </div>
               </q-card-section>
             </q-card-section>
@@ -60,39 +78,27 @@
             class="cimo-shadow col-11"
             style="height: 100%;min-height:390px;padding: 3px;"
           >
-            <v-chart class="" :options="charts2Option" autoresize />
+            <v-chart
+              :options="charts.userLine(chartData.userLine)"
+              autoresize
+            />
           </q-card>
         </div>
       </div>
       <div class="row q-col-gutter-md">
-        <div class="col-xs-12 col-md-3">
-          <q-card
-            class="cimo-shadow"
-            style="height: 430px; width: 100%; padding: 3px"
-          >
-            <v-chart class="" :options="chartPie" autoresize />
-          </q-card>
-        </div>
-        <div class="col-xs-12 col-md-3">
-          <q-card
-            class="cimo-shadow"
-            style="height: 430px; width: 100%; padding: 3px"
-          >
-            <v-chart class="" :options="chartPiePhone" autoresize />
-          </q-card>
-        </div>
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-12">
           <q-card
             class="cimo-shadow text-center"
-            style="height: 430px; width: 100%; padding: 3px"
+            style="width: 100%; padding: 3px"
           >
             <div class="q-pa-md">
-              <q-table
+              <CRUD
                 title="日志"
-                :data="data"
                 :columns="columns"
-                row-key="name"
-              />
+                :showButtons="false"
+                :showSearchBox="false"
+                :onSelect="onSelect"
+              ></CRUD>
             </div>
           </q-card>
         </div>
@@ -103,127 +109,99 @@
 
 <script>
 import countTo from "vue-count-to";
-import { thumbStyle } from "components/BaseContent/ThumbStyle";
-import chartPie from "../../assets/js/echarts-1";
-import chartPiePhone from "../../assets/js/echarts-phone";
-import chartPieSex from "../../assets/js/echarts-sex";
-import chartPieAge from "../../assets/js/echarts-age";
-import charts2Option from "../../assets/js/echarts-2";
-import { income, expense, total } from "../../assets/js/echarts-3";
-import chartZ from "../../assets/js/echarts-4";
+import { createTimeLine } from "../../assets/js/createTimeLine";
+import { createLine } from "../../assets/js/createLine";
+import CRUD from "../../components/CRUD";
 
 export default {
   name: "home",
   components: {
-    countTo
+    countTo,
+    CRUD
   },
   data() {
     return {
-      chartPiePhone,
-      chartPieSex,
-      chartPieAge,
       expanded: false,
-      chartPie,
-      chartZ,
-      charts2Option,
-      income,
-      expense,
-      total,
-      thumbStyle,
-      lorem:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      filter: "",
+      charts: {
+        userLine: createTimeLine,
+        newUser: createLine,
+        activeUser: createLine,
+        totalUser: createLine
+      },
+      chartData: {
+        userLine: {
+          newUser: [],
+          activeUser: [],
+          totalUser: []
+        },
+        newUser: [],
+        activeUser: [],
+        totalUser: []
+      },
       columns: [
+        {
+          name: "id",
+          required: true,
+          label: "ID",
+          field: row => row.id,
+          format: val => `${val}`,
+          sortable: true,
+          searchModify: "@="
+        },
         {
           name: "createdAt",
           label: "时间",
-          field: "createdAt"
+          field: row => row.createdAt,
+          searchModify: "@=",
+          required: true
         },
         {
           name: "message",
           label: "消息",
-          field: "message"
+          field: "message",
+          searchModify: "@="
         },
         {
           name: "level",
           label: "级别",
-          field: "level"
+          field: "level",
+          searchModify: "@="
         },
         {
           name: "loc",
           label: "位置",
-          field: "loc"
-        }
-      ],
-      data: [
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
-        },
-        {
-          createdAt: new Date(
-            Date.now() + 2 * Math.floor(Math.random() * 1000)
-          ).toLocaleString(),
-          message: "管理员登录",
-          level: 1,
-          loc: "/login"
+          field: "loc",
+          searchModify: "@="
         }
       ]
     };
   },
   methods: {
-    handleTableClick(e) {
-      this.$router.push({
-        path: "tableDetail",
-        query: {
-          id: e.name
-        }
-      });
+    async onSelect(crud) {
+      return await this.$api.Counter.getLogs(crud).then(res => res.data);
+    },
+    async fetchNewUser() {
+      const res = await this.$api.Counter.getTimeLine(2, 10);
+      this.chartData.userLine.newUser = res.data;
+      this.chartData.newUser = res.data.map(n => n[1]).reverse();
+    },
+    async fetchActiveUser() {
+      const res = await this.$api.Counter.getTimeLine(1, 10);
+      this.chartData.userLine.activeUser = res.data;
+      this.chartData.activeUser = res.data.map(n => n[1]).reverse();
+    },
+    async fetchTotal() {
+      const res = await this.$api.Counter.getCount(3);
+      this.chartData.newUser = [res.data.count];
+    },
+    async fetch() {
+      this.fetchNewUser();
+      this.fetchActiveUser();
+      this.fetchTotal();
     }
+  },
+  created() {
+    this.fetch();
   }
 };
 </script>
@@ -235,7 +213,7 @@ export default {
   /*max-width: 350px;*/
 }
 
-.income {
+.newUser {
   width: 100%;
   background: linear-gradient(to right, #68e4bc 0%, #4ad0d1 99%);
   border-radius: 5px;
@@ -250,12 +228,12 @@ export default {
   background-size: 200% auto;
 }
 
-.income:hover {
+.newUser:hover {
   background-position: right center;
   box-shadow: 0 12px 20px -11px #0db4afb8;
 }
 
-.expense {
+.activeUser {
   width: 100%;
   background: linear-gradient(to left, #fcac94 0%, #f3a183 98%);
   border-radius: 5px;
@@ -270,12 +248,12 @@ export default {
   background-size: 200% auto;
 }
 
-.expense:hover {
+.activeUser:hover {
   background-position: right center;
   box-shadow: 0 12px 20px -11px #fca76c;
 }
 
-.total {
+.totalUser {
   width: 100%;
   background: linear-gradient(90deg, #f073c8 0%, #ff6a95 99%);
   border-radius: 5px;
@@ -290,7 +268,7 @@ export default {
   background-size: 200% auto;
 }
 
-.total:hover {
+.totalUser:hover {
   background-position: right center;
   box-shadow: 0 12px 20px -11px rgba(240, 115, 200, 0.73);
 }

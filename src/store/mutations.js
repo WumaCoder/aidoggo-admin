@@ -1,28 +1,20 @@
-import asyncRoutes from '../router/asyncRoutes'
-import constructionRouters from '../router/permissionUtils'
-import deepClone from '../utils/CloneUtils'
-import router, { resetRouter } from '../router'
-import { removeATagView, removeOneSide } from 'components/TagView/TagViewUtils'
+import asyncRoutes from "../router/asyncRoutes";
+import constructionRouters from "../router/permissionUtils";
+import deepClone from "../utils/CloneUtils";
+import router, { resetRouter } from "../router";
+import { removeATagView, removeOneSide } from "components/TagView/TagViewUtils";
 
 const mutations = {
-
-  /**
-   * Set the user type, and obtain authorized routing according to permissions
-   * @param state
-   * @param payload
-   * @constructor
-   */
-  SET_ROLES_AND_ROUTES: (state, payload) => {
-    state.role = payload
-    // deepClone
-    const accessRoutes = deepClone(asyncRoutes)
-    accessRoutes[0].children = constructionRouters(accessRoutes[0].children)
-    state.routes = accessRoutes
-  },
-
   // 将动态获取的路由设置到 store 中
   SET_ROLES: (state, payload) => {
-    state.routes = payload
+    state.routes = payload;
+  },
+
+  SET_USER: (state, payload) => {
+    state.currentUser = payload;
+    const accessRoutes = deepClone(asyncRoutes);
+    // accessRoutes[0].children = constructionRouters(accessRoutes[0].children);
+    state.routes = accessRoutes;
   },
 
   /**
@@ -32,12 +24,11 @@ const mutations = {
    * @constructor
    */
   LOGOUT: (state, payload) => {
-    state.role = ''
-    state.routes = []
-    state.tagView = []
-    sessionStorage.removeItem('access_token')
-    sessionStorage.removeItem('user_role')
-    resetRouter()
+    state.role = "";
+    state.routes = [];
+    state.tagView = [];
+    sessionStorage.removeItem("access_token");
+    resetRouter();
   },
 
   /**
@@ -47,20 +38,20 @@ const mutations = {
    * @constructor
    */
   ADD_TAG_VIEW: (state, payload) => {
-    const size = state.tagView.length
+    const size = state.tagView.length;
     // When entering or refreshing the page for the first time & the current route is not the root route
-    if (!size && payload.fullPath !== '/') {
-      state.tagView.push(payload)
-      return
+    if (!size && payload.fullPath !== "/") {
+      state.tagView.push(payload);
+      return;
     }
     // To avoid adding tagView repeatedly. Construct an array t[] identified by fullPath
-    const t = []
+    const t = [];
     for (let i = 0; i < size; i++) {
-      t.push(state.tagView[i].fullPath)
+      t.push(state.tagView[i].fullPath);
     }
     // If there is no current route in t[]
     if (t.indexOf(payload.fullPath) === -1) {
-      state.tagView.push(payload)
+      state.tagView.push(payload);
     }
   },
 
@@ -71,7 +62,7 @@ const mutations = {
    * @constructor
    */
   SET_TAG_VIEW: (state, payload) => {
-    state.tagView = payload
+    state.tagView = payload;
   },
 
   /**
@@ -87,18 +78,18 @@ const mutations = {
    */
   REMOVE_TAG_VIEW: (state, payload) => {
     switch (typeof payload) {
-      case 'undefined':
+      case "undefined":
         // remove all tagView
-        state.tagView = []
-        window.sessionStorage.setItem('tagView', '[]')
-        router.push('/')
-        break
-      case 'object':
-        removeOneSide(state, payload)
-        break
+        state.tagView = [];
+        window.sessionStorage.setItem("tagView", "[]");
+        router.push("/");
+        break;
+      case "object":
+        removeOneSide(state, payload);
+        break;
       default:
-        removeATagView(state, payload)
-        break
+        removeATagView(state, payload);
+        break;
     }
   },
 
@@ -109,7 +100,7 @@ const mutations = {
    * @constructor
    */
   SET_BREADCRUMBS: (state, payload) => {
-    state.breadcrumbs = payload
+    state.breadcrumbs = payload;
   },
 
   /**
@@ -117,18 +108,17 @@ const mutations = {
    * @param payload tagView[]
    */
   SET_KEEPALIVE_LIST: (state, payload) => {
-    state.keepAliveList = []
+    state.keepAliveList = [];
     for (let i = 0; i < payload.length; i++) {
       if (payload[i].keepAlive) {
-        state.keepAliveList.push(payload[i].name)
+        state.keepAliveList.push(payload[i].name);
       }
     }
     // If you need to cache the homepage, as shown below,
     // push the corresponding routing component name at the end of the method.
     // state.keepAliveList.push('home')
-    return state.keepAliveList
+    return state.keepAliveList;
   }
+};
 
-}
-
-export default mutations
+export default mutations;

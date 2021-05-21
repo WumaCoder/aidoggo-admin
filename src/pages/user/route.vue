@@ -4,49 +4,16 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
 </template>
 
 <script>
-import { toQSelectOptions } from "../../utils/enum";
 import CRUD from "components/CRUD.vue";
-
-const routes = [
-  {
-    id: 1,
-    protocol: "0",
-    method: "1",
-    matched: "/user",
-    type: 0,
-    description: "获取用户"
-  },
-  {
-    id: 2,
-    protocol: "0",
-    method: 1,
-    matched: "/user",
-    type: 0,
-    description: "获取用户"
-  },
-  {
-    id: 3,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    type: 1,
-    description: "获取用户"
-  },
-  {
-    id: 4,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    type: 0,
-    description: "获取用户"
-  }
-];
 
 export default {
   components: { CRUD },
@@ -55,17 +22,15 @@ export default {
       form: {
         protocol: {
           is: "q-select",
-          emitValue: true,
-          mapOptions: true,
-          default: "0",
-          options: toQSelectOptions(this.$RouteProtocol)
+          default: "http",
+          options: ["http", "ws"]
         },
         method: {
           is: "q-select",
-          emitValue: true,
-          mapOptions: true,
-          default: "0",
-          options: toQSelectOptions(this.$RouteMethod)
+          emitValue: false,
+          mapOptions: false,
+          default: "get",
+          options: ["get", "post", "delete", "put"]
         },
         matched: {
           is: "q-input",
@@ -90,7 +55,7 @@ export default {
           name: "type",
           required: true,
           label: "类别",
-          bindProps: row => ({ label: row.type === 0 ? "服务" : "页面" }),
+          bindProps: row => ({ label: row.type === 0 ? "Router" : "API" }),
           sortable: true,
           searchModify: "@Like",
           is: "q-chip"
@@ -100,7 +65,7 @@ export default {
           required: true,
           label: "协议",
           field: row => row.protocol,
-          format: val => `${this.$RouteProtocol[val]}`,
+          format: val => `${val}`,
           sortable: true,
           searchModify: "@Like"
         },
@@ -109,7 +74,7 @@ export default {
           required: true,
           label: "类型",
           field: row => row.method,
-          format: val => `${this.$RouteMethod[val]}`,
+          format: val => `${val}`,
           sortable: true,
           searchModify: "@Like"
         },
@@ -135,11 +100,17 @@ export default {
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: routes,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Router.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Router.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Router.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Router.del(id);
     }
   }
 };

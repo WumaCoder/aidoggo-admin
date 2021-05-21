@@ -1,4 +1,5 @@
 import { DefEnum } from "../utils/enum";
+import api from "../api";
 // import something here
 
 export const Sex = DefEnum(["未知", "男", "女"]);
@@ -24,4 +25,5 @@ export default async ({ Vue } /* {"app","router", Vue ... } */) => {
   Vue.prototype.$Sex = Sex;
   Vue.prototype.$RouteMethod = RouteMethod;
   Vue.prototype.$RouteProtocol = RouteProtocol;
+  Vue.prototype.$api = api;
 };

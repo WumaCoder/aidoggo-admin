@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
@@ -12,60 +15,6 @@
 <script>
 import CRUD from "components/CRUD.vue";
 
-const res = [
-  {
-    id: 1,
-    name: "admin",
-    description: "管理员",
-    rejectIds: [2, 3],
-    routes: [1]
-  },
-  {
-    id: 2,
-    name: "user",
-    description: "用户",
-    rejectIds: [],
-    routes: []
-  },
-  {
-    id: 3,
-    name: "user1",
-    description: "用户1",
-    rejectIds: [1],
-    routes: []
-  }
-];
-
-const routes = [
-  {
-    id: 1,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    description: "获取用户"
-  },
-  {
-    id: 2,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    description: "获取用户"
-  },
-  {
-    id: 3,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    description: "获取用户"
-  },
-  {
-    id: 4,
-    protocol: 0,
-    method: 1,
-    matched: "/user",
-    description: "获取用户"
-  }
-];
 export default {
   components: { CRUD },
   data() {
@@ -84,20 +33,29 @@ export default {
           optionLabel: "name",
           optionValue: "id",
           async asyncLoad() {
-            res.push({ id: 1, name: "t" });
-            return res;
+            return await this.$api.Role.gets({ page: "1:1000" }).then(res =>
+              res.data.list.map(item => ({
+                id: String(item.id),
+                name: item.name
+              }))
+            );
           }
         },
-        routes: {
+        routers: {
           is: "form-multi-select",
-          optionLabel: "label",
-          optionValue: "id",
+          optionLabel: "description",
+          // optionValue: "id",
           async asyncLoad() {
+            const routes = await this.$api.Service.getRoutes().then(
+              res => res.data
+            );
             return routes.map(n => {
-              const p = this.$RouteProtocol[n.protocol];
-              const m = this.$RouteMethod[n.method];
+              n.id = String(n.id);
+              delete n.service;
+              const p = (n.protocol = "http");
+              const m = n.method;
               const r = n.matched;
-              n.label = `${p} ${m}${r}`;
+              n.description = `${p} ${m}${r}`;
               return n;
             });
           }
@@ -135,29 +93,32 @@ export default {
           name: "rejectIds",
           required: true,
           label: "互斥角色",
-          field: row =>
-            row.rejectIds
-              .map(id => res.find(role => id === role.id))
-              .map(role => role.name),
-          format: val => val,
-          is: "form-chips"
+          field: row => row.rejectIds,
+          format: val => `(${val.length || "0"})`
+          // is: "form-chips"
         },
         {
-          name: "routes",
+          name: "routers",
           required: true,
           label: "权限路由",
-          field: row => row.routes,
+          field: row => row.routers,
           format: val => `点击详细(${val.length})`
         }
       ]
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: res,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Role.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Role.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Role.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Role.del(id);
     }
   }
 };

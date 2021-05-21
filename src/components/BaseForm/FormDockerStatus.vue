@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card" flat bordered>
+  <q-card v-if="value" class="my-card" flat bordered>
     <q-card-section horizontal>
       <q-card-section style="width:100%">
         <q-list bordered separator>

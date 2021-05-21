@@ -1,5 +1,5 @@
-import store from '../store'
-import Layout from '../components/Layout/Layout.vue'
+import store from "../store";
+import Layout from "../components/Layout/Layout.vue";
 
 /**
  * 用于根据用户角色，生成过滤后的路由
@@ -8,18 +8,22 @@ import Layout from '../components/Layout/Layout.vue'
  * @param t 暂存变量
  * @returns {*} 过滤后的路由
  */
-export default function constructionRouters (router, t) {
+export default function constructionRouters(router, t) {
   t = router.filter(item => {
     // 如果 roles 没有被设置，则所有人均可访问
-    if (!item.meta.roles || item.meta.roles.length === 0) return true
-    return item.meta.roles.indexOf(store.getters.getRole) !== -1
-  })
+    if (!item.meta.roles || item.meta.roles.length === 0) return true;
+    return (
+      item.meta.roles.findIndex(
+        r => store.getters.getRoles.findIndex(_r => _r.name === r) !== -1
+      ) !== -1
+    );
+  });
   for (const i in t) {
     if (t[i].children) {
-      t[i].children = constructionRouters(t[i].children)
+      t[i].children = constructionRouters(t[i].children);
     }
   }
-  return t
+  return t;
 }
 
 /**
@@ -27,26 +31,26 @@ export default function constructionRouters (router, t) {
  * @param jsonRouter 后台路由
  * @param t 占存变量，用于返回值（不需要传参）
  */
-export function handleJsonRouterToAsyncRouter (jsonRouter, t) {
+export function handleJsonRouterToAsyncRouter(jsonRouter, t) {
   t = jsonRouter.map(item => {
-    if (item.component === 'Layout') {
-      item.component = Layout
+    if (item.component === "Layout") {
+      item.component = Layout;
     } else {
       // Lazy loading of components
-      item.component = handleComponent(item.component)
+      item.component = handleComponent(item.component);
     }
-    return item
-  })
+    return item;
+  });
   for (const item of t) {
     if (item.children) {
-      item.children = handleJsonRouterToAsyncRouter(item.children)
+      item.children = handleJsonRouterToAsyncRouter(item.children);
     }
   }
-  return t
+  return t;
 }
 
-function handleComponent (component) {
-  return () => import('src/pages/' + component)
+function handleComponent(component) {
+  return () => import("src/pages/" + component);
 }
 
 /**
@@ -56,16 +60,16 @@ function handleComponent (component) {
  * @param asyncRouters
  * @returns {Promise<void>} 处理后的 asyncRouters
  */
-export async function handleAsyncRouterToJson (asyncRouters) {
+export async function handleAsyncRouterToJson(asyncRouters) {
   // 先把路由树中的每个节点的 roles 重置为 []，即每个人都可以访问
   for (const item of asyncRouters) {
-    item.meta.roles = []
+    item.meta.roles = [];
     if (item.children) {
-      await handleAsyncRouterToJson(item.children)
+      await handleAsyncRouterToJson(item.children);
     }
     // 当遍历到 *（404）路由时，说明遍历完成，接着去处理 Component 的懒加载
-    if (item.path === '*') {
-      return await handleAsyncRouterComponentToJson(asyncRouters)
+    if (item.path === "*") {
+      return await handleAsyncRouterComponentToJson(asyncRouters);
     }
   }
 }
@@ -76,24 +80,24 @@ export async function handleAsyncRouterToJson (asyncRouters) {
  * @param asyncRouters
  * @returns {Promise<void>}
  */
-export async function handleAsyncRouterComponentToJson (asyncRouters) {
+export async function handleAsyncRouterComponentToJson(asyncRouters) {
   for (const item of asyncRouters) {
     // 如果 component 是懒加载，则执行它
-    if (typeof item.component === 'function') {
-      const c = await item.component()
+    if (typeof item.component === "function") {
+      const c = await item.component();
       // 使用正则表达式将地址中的 'src/pages/' 替换为 ''
-      item.component = c.default.__file.replace(/src\/pages\//, '')
+      item.component = c.default.__file.replace(/src\/pages\//, "");
     } else if (item.component) {
-      item.component = item.component.name
+      item.component = item.component.name;
     }
     if (item.children) {
-      await handleAsyncRouterComponentToJson(item.children)
+      await handleAsyncRouterComponentToJson(item.children);
     }
     // 当遍历到 * （404）路由时，说明遍历完成
-    if (item.path === '*') {
+    if (item.path === "*") {
       // 去除 404 路由，在新增路由时自动添加
-      asyncRouters.pop()
-      return asyncRouters
+      asyncRouters.pop();
+      return asyncRouters;
     }
   }
 }
@@ -106,16 +110,19 @@ export async function handleAsyncRouterComponentToJson (asyncRouters) {
  * @param t 暂存变量
  * @returns {Promise<void>} 处理后的 asyncRouters JSON 字符串
  */
-export function handleBaseRouterToRolesRouter (baseRouter, selectedRouter, t) {
+export function handleBaseRouterToRolesRouter(baseRouter, selectedRouter, t) {
   t = baseRouter.filter(item => {
     return selectedRouter.some(s => {
-      return s === item.name
-    })
-  })
+      return s === item.name;
+    });
+  });
   for (const item of t) {
     if (item.children) {
-      item.children = handleBaseRouterToRolesRouter(item.children, selectedRouter)
+      item.children = handleBaseRouterToRolesRouter(
+        item.children,
+        selectedRouter
+      );
     }
   }
-  return t
+  return t;
 }

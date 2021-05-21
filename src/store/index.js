@@ -1,13 +1,14 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import state from './state'
-import getters from './getters'
-import mutations from 'src/store/mutations'
-import actions from './actions'
-import modules from './modules'
+import Vue from "vue";
+import Vuex from "vuex";
+import state from "./state";
+import getters from "./getters";
+import mutations from "src/store/mutations";
+import actions from "./actions";
+import modules from "./modules";
 // import example from './module-example'
+import createPersistedState from "vuex-persistedstate";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -27,8 +28,9 @@ const store = new Vuex.Store({
   modules,
   // enable strict mode (adds overhead!)
   // for dev mode only
-  strict: process.env.DEBUGGING
-})
+  strict: process.env.DEBUGGING,
+  plugins: [createPersistedState()]
+});
 
-export default store
+export default store;
 // }

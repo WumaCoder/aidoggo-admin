@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import asyncRoutes from "./asyncRoutes";
 import constantRoutes from "./constantRoutes";
 
 Vue.use(VueRouter);
@@ -22,7 +23,7 @@ const createRouter = () =>
   new VueRouter({
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.BASE_URL,
-    routes: constantRoutes
+    routes: [...constantRoutes, ...asyncRoutes]
   });
 
 const router = createRouter();

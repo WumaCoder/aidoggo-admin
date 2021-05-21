@@ -8,7 +8,7 @@ const asyncRoutesChildren = [
     path: "/",
     name: "Home",
     meta: {
-      roles: ["admin", "editor", "test"],
+      roles: ["超级管理员", "test"],
       title: "数据统计",
       icon: "bar_chart",
       keepAlive: true
@@ -19,7 +19,7 @@ const asyncRoutesChildren = [
     path: "/user",
     name: "User",
     meta: {
-      roles: ["admin", "editor"],
+      roles: ["超级管理员"],
       title: "用户管理",
       icon: "admin_panel_settings",
       isOpen: true
@@ -30,7 +30,7 @@ const asyncRoutesChildren = [
         path: "account",
         name: "UserAccount",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "账号管理",
           icon: "person",
           keepAlive: true
@@ -41,7 +41,7 @@ const asyncRoutesChildren = [
         path: "role",
         name: "UserRole",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "角色管理",
           icon: "verified_user",
           keepAlive: true
@@ -52,7 +52,7 @@ const asyncRoutesChildren = [
         path: "route",
         name: "UserRoute",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "权限管理",
           icon: "link",
           keepAlive: true
@@ -65,7 +65,7 @@ const asyncRoutesChildren = [
     path: "/service",
     name: "Service",
     meta: {
-      roles: ["admin", "editor"],
+      roles: ["超级管理员"],
       title: "服务管理",
       icon: "extension",
       isOpen: true
@@ -76,7 +76,7 @@ const asyncRoutesChildren = [
         path: "docker",
         name: "ServiceDocker",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "容器管理",
           icon: "view_module",
           keepAlive: true
@@ -87,7 +87,7 @@ const asyncRoutesChildren = [
         path: "config",
         name: "ServiceConfig",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "配置管理",
           icon: "format_list_bulleted",
           keepAlive: true
@@ -98,7 +98,7 @@ const asyncRoutesChildren = [
         path: "route",
         name: "ServiceRoute",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "路由管理",
           icon: "alt_route",
           isHidden: true,
@@ -112,7 +112,7 @@ const asyncRoutesChildren = [
     path: "/image",
     name: "Image",
     meta: {
-      roles: ["admin", "editor"],
+      roles: ["超级管理员"],
       title: "图片管理",
       icon: "image",
       isOpen: true
@@ -123,7 +123,7 @@ const asyncRoutesChildren = [
         path: "user",
         name: "ImageUser",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "用户图片",
           icon: "camera_alt",
           keepAlive: true
@@ -134,7 +134,7 @@ const asyncRoutesChildren = [
         path: "apply",
         name: "ImageApply",
         meta: {
-          roles: ["admin", "editor"],
+          roles: ["超级管理员"],
           title: "审批图片",
           icon: "approval",
           keepAlive: true
@@ -147,7 +147,7 @@ const asyncRoutesChildren = [
     path: "/material",
     name: "Material",
     meta: {
-      roles: ["admin", "editor"],
+      roles: ["超级管理员"],
       title: "文章管理",
       icon: "book"
     },
@@ -157,7 +157,7 @@ const asyncRoutesChildren = [
     path: "/message",
     name: "Message",
     meta: {
-      roles: ["admin", "editor"],
+      roles: ["超级管理员"],
       title: "消息管理",
       icon: "markunread_mailbox"
     },
@@ -167,7 +167,7 @@ const asyncRoutesChildren = [
     path: "*", // 此处需置于最底部
     redirect: "/NoFound404",
     meta: {
-      roles: ["admin", "test"],
+      roles: ["超级管理员"],
       isHidden: true
     }
   }

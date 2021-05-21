@@ -109,34 +109,34 @@ export default {
     };
   },
   methods: {
-    logon() {
+    async logon() {
       this.loading = !this.loading;
-      if (this.username === "admin" || this.username === "test") {
-        sessionStorage.setItem("access_token", 972784674);
-        sessionStorage.setItem("user_role", this.username);
-        const lt = setTimeout(() => {
-          this.$router.push("/").then(e => {
-            this.$q.notify({
-              icon: "insert_emoticon",
-              message: "hi，cimo 欢迎回来",
-              color: "green",
-              position: "top",
-              timeout: 1500
-            });
-            clearTimeout(lt);
-            this.loading = !this.loading;
-            // 如果是 electron 则改变窗口大小
-            if (process.env.MODE === "electron") {
-              this.$q.electron.remote.getCurrentWindow().setSize(1023, 768);
-              this.$q.electron.remote.getCurrentWindow().center();
-            }
+      const res = await this.$api.Auth.login({
+        username: this.username,
+        password: this.password
+      });
+      const { message, user, jwt: token } = res.data;
+
+      if (!message) {
+        sessionStorage.setItem("access_token", token);
+        this.$store.commit("SET_USER", user);
+        // sessionStorage.setItem("user_role", user.role);
+
+        this.$router.push("/").then(e => {
+          this.$q.notify({
+            icon: "insert_emoticon",
+            message: `hi，${user.nick} 欢迎回来`,
+            color: "green",
+            position: "top",
+            timeout: 1500
           });
-        }, Math.random() * 3000);
+          this.loading = !this.loading;
+        });
       } else {
         this.loading = !this.loading;
         this.$q.notify({
           icon: "announcement",
-          message: "账号错误",
+          message,
           color: "red",
           position: "top",
           timeout: 1500

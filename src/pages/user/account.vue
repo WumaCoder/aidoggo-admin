@@ -4,13 +4,15 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
 </template>
 
 <script>
-import { toQSelectOptions } from "../../utils/enum";
 import CRUD from "components/CRUD.vue";
 export default {
   components: { CRUD },
@@ -36,10 +38,8 @@ export default {
         },
         sex: {
           is: "q-select",
-          emitValue: true,
-          mapOptions: true,
-          default: "0",
-          options: toQSelectOptions(this.$Sex)
+          default: "未知",
+          options: ["未知", "男", "女"]
         },
         auth: {
           is: "form-auth"
@@ -97,7 +97,7 @@ export default {
           required: true,
           label: "性别",
           field: row => row.sex,
-          format: val => `${this.$Sex[val]}`,
+          format: val => `${val}`,
           sortable: true
         },
         {
@@ -105,7 +105,7 @@ export default {
           required: true,
           label: "绑定方式",
           field: row => row.auth,
-          format: val => `${this.bindAuth(val).join("/")}`
+          format: val => `${this.bindAuth(val).join(" ")}`
         },
         {
           name: "createdAt",
@@ -125,31 +125,17 @@ export default {
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: [
-          {
-            id: 1,
-            avatar: "https://cdn.quasar.dev/img/avatar.png",
-            nick: "管理员",
-            name: "掌上",
-            email: "111@qq.com",
-            sex: "0",
-            auth: {
-              local: {
-                username: "11111",
-                password: "222"
-              },
-              weapp: null
-            },
-            setting: {
-              isShowInfo: false,
-              isPublic: false
-            }
-          }
-        ],
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.User.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.User.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.User.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.User.del(id);
     },
     bindAuth(auth) {
       return [auth.local ? "本地" : "", auth.weapp ? "微信" : ""];
