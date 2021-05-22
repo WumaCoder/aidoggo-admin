@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
@@ -39,6 +42,11 @@ export default {
         title: {
           is: "q-input",
           type: "text"
+        },
+        type: {
+          is: "q-select",
+          type: "text",
+          options: ["普通消息", "公共消息"]
         },
         body: {
           is: "q-input",
@@ -76,7 +84,7 @@ export default {
           name: "type",
           required: true,
           label: "类型",
-          field: row => (row.type ? "用户" : "系统"),
+          field: row => row.type,
           sortable: true,
           searchModify: "@Like"
         },
@@ -100,11 +108,17 @@ export default {
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: routes,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Message.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Message.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Message.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Message.del(id);
     }
   }
 };

@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="true"
       :isCreateBtn="false"
     ></CRUD>
@@ -13,15 +16,6 @@
 <script>
 import CRUD from "components/CRUD.vue";
 
-const data = [
-  {
-    id: 1,
-    userId: 1,
-    url:
-      "https://tse1-mm.cn.bing.net/th?id=OIP.VwLkptC1sSNfTehCroMy4AHaEo&w=153&h=100&c=8&rs=1&qlt=90&dpr=2&pid=3.1&rm=2",
-    status: 1
-  }
-];
 export default {
   components: { CRUD },
   data() {
@@ -49,16 +43,19 @@ export default {
           name: "url",
           required: true,
           label: "图片",
-          field: row => row.url,
-          sortable: true,
-          searchModify: "@Like"
+          bindProps: row => ({
+            src: row.url,
+            style: { width: "100%", height: "200px" }
+          }),
+          is: "q-img"
         },
-
         {
           name: "type",
           required: true,
           label: "状态",
-          field: row => (row.type ? "通过" : "未通过"),
+          bindProps: row => ({
+            label: row.type ? "通过" : "未通过"
+          }),
           sortable: true,
           searchModify: "@Like",
           is: "q-chip"
@@ -67,11 +64,17 @@ export default {
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: data,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Image.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Image.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Image.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Image.del(id);
     }
   }
 };

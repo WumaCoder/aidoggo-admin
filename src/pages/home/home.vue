@@ -7,7 +7,7 @@
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
-                  新增用户
+                  访问量
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
                   <countTo
@@ -30,7 +30,7 @@
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
-                  活跃用户
+                  用户登录
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
                   <countTo
@@ -53,7 +53,7 @@
             <q-card-section horizontal>
               <q-card-section class="col">
                 <div class="text-subtitle2 text-white">
-                  现存用户
+                  注册用户
                 </div>
                 <div class="text-h6 q-mt-sm q-mb-xs text-white">
                   <countTo
@@ -181,7 +181,7 @@ export default {
       return await this.$api.Counter.getLogs(crud).then(res => res.data);
     },
     async fetchNewUser() {
-      const res = await this.$api.Counter.getTimeLine(2, 10);
+      const res = await this.$api.Counter.getTimeLine(3, 10);
       this.chartData.userLine.newUser = res.data;
       this.chartData.newUser = res.data.map(n => n[1]).reverse();
     },
@@ -191,8 +191,10 @@ export default {
       this.chartData.activeUser = res.data.map(n => n[1]).reverse();
     },
     async fetchTotal() {
-      const res = await this.$api.Counter.getCount(3);
-      this.chartData.newUser = [res.data.count];
+      const res = await this.$api.Counter.getCount(2);
+      this.chartData.totalUser = [res.data.count];
+      const res1 = await this.$api.Counter.getTimeLine(2, 10);
+      this.chartData.userLine.totalUser = res1.data;
     },
     async fetch() {
       this.fetchNewUser();

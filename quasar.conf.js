@@ -110,7 +110,14 @@ module.exports = function(/* ctx */) {
       // you can manually specify Quasar components/directives to be available everywhere:
       //
 
-      components: ["QSpinnerGrid", "QInput", "QSelect", "QAvatar", "QChip"],
+      components: [
+        "QSpinnerGrid",
+        "QInput",
+        "QSelect",
+        "QAvatar",
+        "QChip",
+        "QImg"
+      ],
 
       directives: ["ClosePopup", "Ripple"],
 

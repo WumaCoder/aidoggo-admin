@@ -158,7 +158,7 @@ export function createTimeLine({ newUser, activeUser, totalUser }) {
     ],
     series: [
       {
-        name: "新增用户",
+        name: "访问量",
         type: "line",
         data: newUser,
         symbolSize: 1,
@@ -187,7 +187,7 @@ export function createTimeLine({ newUser, activeUser, totalUser }) {
         }
       },
       {
-        name: "活跃用户",
+        name: "用户登录",
         type: "line",
         data: activeUser,
         symbolSize: 1,
@@ -216,7 +216,7 @@ export function createTimeLine({ newUser, activeUser, totalUser }) {
         }
       },
       {
-        name: "现存用户",
+        name: "注册用户",
         type: "line",
         data: totalUser,
         symbolSize: 1,

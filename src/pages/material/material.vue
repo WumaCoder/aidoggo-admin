@@ -4,6 +4,9 @@
       :form="form"
       :columns="columns"
       :onSelect="onSelect"
+      :onUpdate="onUpdate"
+      :onCreate="onCreate"
+      :onDelete="onDelete"
       :isGrid="false"
     ></CRUD>
   </base-content>
@@ -12,17 +15,6 @@
 <script>
 import CRUD from "components/CRUD.vue";
 
-const routes = [
-  {
-    id: 1,
-    sendUserId: 1,
-    targetUserId: 2,
-    type: 1,
-    title: "用户反馈",
-    body: "非常好用",
-    createdAt: "2021-01-22 22:33:00"
-  }
-];
 export default {
   components: { CRUD },
   data() {
@@ -37,8 +29,7 @@ export default {
           type: "text"
         },
         tags: {
-          is: "q-input",
-          type: "text"
+          is: "form-chips"
         },
         url: {
           is: "q-input",
@@ -75,33 +66,48 @@ export default {
           label: "标签",
           field: row => row.tags,
           sortable: true,
-          searchModify: "@Like"
+          searchModify: "@Like",
+          is: "cell-chips"
         },
         {
           name: "type",
           required: true,
           label: "类型",
-          field: row => (row.type ? "用户" : "识别"),
-          sortable: true,
-          searchModify: "@Like"
-        },
-        {
-          name: "createdAt",
-          required: true,
-          label: "创建时间",
-          field: row => row.createdAt,
+          field: row => row.type,
           sortable: true,
           searchModify: "@Like"
         }
+        // {
+        //   name: "createdAt",
+        //   required: true,
+        //   label: "创建时间",
+        //   field: row => row.createdAt,
+        //   sortable: true,
+        //   searchModify: "@Like"
+        // },
+        // {
+        //   name: "updatedAt",
+        //   required: true,
+        //   label: "更新时间",
+        //   field: row => row.updatedAt,
+        //   sortable: true,
+        //   searchModify: "@Like"
+        // }
       ]
     };
   },
   methods: {
-    async onSelect() {
-      return {
-        list: routes,
-        total: 13
-      };
+    async onSelect(p) {
+      return await this.$api.Material.gets(p).then(res => res.data);
+    },
+    async onUpdate(id, data) {
+      return await this.$api.Material.update(id, data);
+    },
+    async onCreate(data) {
+      return await this.$api.Material.create(data);
+    },
+    async onDelete(id) {
+      return await this.$api.Material.del(id);
     }
   }
 };
