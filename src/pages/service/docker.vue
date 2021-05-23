@@ -93,7 +93,7 @@ export default {
           required: true,
           label: "类型",
           field: row => row.type,
-          bindProps: row => ({ label: row.type === 0 ? "核心" : "业务" }),
+          bindProps: row => ({ label: this.$ServiceType[row.type + ""] }),
           sortable: true,
           searchModify: "@Like",
           is: "q-chip"
