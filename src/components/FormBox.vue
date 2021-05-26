@@ -7,6 +7,7 @@
       :is="item.is"
       :label="item.label || findColumn(key).label"
       :src="formData[key]"
+      :row="formData"
       v-model="formData[key]"
       @input="$emit('change', $event, key, formData)"
     >

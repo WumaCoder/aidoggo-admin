@@ -43,7 +43,7 @@ export default {
           name: "status",
           required: true,
           label: "状态",
-          field: row => row.discern.status,
+          field: row => this.$Status[row.discern.status],
           sortable: true
         },
         {
@@ -57,12 +57,18 @@ export default {
           is: "q-img"
         },
         {
-          name: "type",
+          name: "status-btns",
           required: true,
           bindProps: row => ({
             status: row.discern.status,
-            onPass: () => {},
-            onNoPass: () => {}
+            onPass: () => {
+              this.$api.Discern.update(row.discern.id, { status: 2 });
+              row.discern.status = 2;
+            },
+            onNoPass: () => {
+              this.$api.Discern.update(row.discern.id, { status: 3 });
+              row.discern.status = 3;
+            }
           }),
           sortable: true,
           searchModify: "@Like",

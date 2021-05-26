@@ -21,7 +21,13 @@ export default {
       form: {
         avatar: {
           is: "form-avatar",
-          size: "100px"
+          size: "100px",
+          changeble: true
+        },
+        id: {
+          is: "q-input",
+          label: "ID",
+          readonly: true
         },
         email: {
           is: "q-input",
@@ -43,6 +49,9 @@ export default {
         },
         auth: {
           is: "form-auth"
+        },
+        roles: {
+          is: "form-roles"
         },
         setting: {
           is: "form-setting"

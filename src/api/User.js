@@ -24,3 +24,11 @@ export function del(id) {
 export function create(data) {
   return axios.post(`/user`, data);
 }
+
+export function addRole(userId, roleId) {
+  return axios.post(`/user/addRole`, { userId, roleId });
+}
+
+export function delRole(userId, roleId) {
+  return axios.post(`/user/delRole`, { userId, roleId });
+}

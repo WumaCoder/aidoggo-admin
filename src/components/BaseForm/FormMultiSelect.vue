@@ -8,7 +8,7 @@
         @input="$emit('input', $event)"
         use-chips
         :label="label"
-        :options="options"
+        :options="tOptions"
         :option-label="optionLabel"
         :option-value="optionValue"
         :emit-value="true"
@@ -16,6 +16,8 @@
         multiple
         :loading="loading"
         @virtual-scroll="onScrollBottom"
+        @add="$emit('add', $event)"
+        @remove="$emit('remove', $event)"
       >
         <template v-slot:no-option>
           <q-item>
@@ -35,12 +37,13 @@ export default {
     label: String,
     value: Array,
     asyncLoad: Function,
+    options: Array,
     optionLabel: String,
     optionValue: String
   },
   data() {
     return {
-      options: [],
+      tOptions: this.options,
       loading: false
     };
   },
@@ -49,7 +52,7 @@ export default {
     async onScrollBottom(e) {
       this.loading = true;
       if (this.asyncLoad) {
-        this.options = await this.asyncLoad(e);
+        this.tOptions = await this.asyncLoad(e);
       }
       this.loading = false;
     }

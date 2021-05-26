@@ -40,6 +40,13 @@ export default {
           searchModify: "@Like"
         },
         {
+          name: "status",
+          required: true,
+          label: "状态",
+          field: row => this.$Status[row.discern.status],
+          sortable: true
+        },
+        {
           name: "url",
           required: true,
           label: "图片",
@@ -48,17 +55,6 @@ export default {
             style: { width: "100%", height: "200px" }
           }),
           is: "q-img"
-        },
-        {
-          name: "type",
-          required: true,
-          label: "状态",
-          bindProps: row => ({
-            label: row.type ? "通过" : "未通过"
-          }),
-          sortable: true,
-          searchModify: "@Like",
-          is: "q-chip"
         }
       ]
     };

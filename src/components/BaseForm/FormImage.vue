@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <q-avatar :size="size" @click="onClick">
-      <img :src="value" />
-    </q-avatar>
+  <div @click="onClick">
+    <q-field :label="label">
+      <template v-slot:control>
+        <q-img style="width:100%;height:300px;" :src="value" />
+      </template>
+    </q-field>
     <q-dialog v-model="isOpen">
       <q-uploader
         style="max-width: 300px"
         :url="tempUrl"
         :form-fields="formFields"
-        label="上传头像"
+        label="上传图片"
         accept=".jpg, .png, image/*"
         @finish="onFinish"
       />
@@ -21,7 +23,7 @@ import { getUploadUrl, getImage } from "../../utils/image";
 export default {
   props: {
     value: String,
-    size: String,
+    label: String,
     changeble: Boolean
   },
   data() {

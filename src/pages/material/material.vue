@@ -32,9 +32,9 @@ export default {
           is: "form-chips"
         },
         url: {
-          is: "q-input",
-          type: "text",
-          label: "图片地址"
+          is: "form-image",
+          label: "图片地址",
+          changeble: true
         },
         description: {
           is: "q-input",

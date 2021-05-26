@@ -250,7 +250,11 @@ export default {
               const index = this.data.findIndex(
                 item => item.id === this.updateId
               );
-              this.$set(this.data, index, { id: this.updateId, ...formData });
+              this.$set(this.data, index, {
+                id: this.updateId,
+                ...this.data[index],
+                ...formData
+              });
               this.dialog = false;
               this.$q.notify("修改数据成功");
             }
