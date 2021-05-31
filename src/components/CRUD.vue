@@ -125,8 +125,11 @@
                   <q-item-label caption>
                     <component
                       :is="col.is || 'cell-text'"
-                      :value="col.value"
-                      v-bind="col.bindProps && col.bindProps(props.row)"
+                      v-bind="
+                        col.bindProps
+                          ? col.bindProps(props.row)
+                          : { value: col.value }
+                      "
                     ></component>
                   </q-item-label>
                 </q-item-section>

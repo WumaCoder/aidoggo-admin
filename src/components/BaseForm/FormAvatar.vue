@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-avatar :size="size" @click="onClick">
-      <img :src="value" />
+      <img :src="imageUrl" />
     </q-avatar>
     <q-dialog v-model="isOpen">
       <q-uploader
@@ -17,7 +17,9 @@
 </template>
 
 <script>
-import { getUploadUrl, getImage } from "../../utils/image";
+import { mounted } from "vue-echarts";
+import { getUploadUrl, getImageUrl } from "../../utils/image";
+import { create } from "src/api/Config";
 export default {
   props: {
     value: String,
@@ -29,7 +31,8 @@ export default {
       isOpen: false,
       tempUrl: "",
       formFields: [],
-      resultUrl: ""
+      resultUrl: "",
+      imageUrl: ""
     };
   },
   methods: {
@@ -49,10 +52,13 @@ export default {
       this.resultUrl = this.tempUrl + "/" + uploader.formData.key;
     },
     async onFinish() {
-      console.log(this.resultUrl);
-      const imageUrl = await getImage(this.resultUrl);
-      this.$emit("input", imageUrl);
+      this.imageUrl = await getImageUrl(this.resultUrl);
+      this.$emit("input", this.resultUrl);
     }
+  },
+  async created() {
+    await this.$nextTick();
+    this.imageUrl = await getImageUrl(this.value);
   }
 };
 

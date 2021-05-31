@@ -5,7 +5,7 @@
         <div class="row no-wrap q-pa-md">
           <div class="column items-center">
             <q-avatar size="72px">
-              <img :src="$store.state.currentUser.avatar" />
+              <img :src="imageUrl" />
             </q-avatar>
 
             <div class="text-subtitle1 q-mt-md q-mb-xs">
@@ -23,7 +23,7 @@
         </div>
       </q-menu>
       <q-avatar size="26px">
-        <img :src="$store.state.currentUser.avatar" />
+        <img :src="imageUrl" />
       </q-avatar>
       <q-tooltip>账号</q-tooltip>
     </q-btn>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { getImageUrl } from "src/utils/image";
 export default {
   name: "ToolbarItemRight",
   data() {
@@ -38,7 +39,8 @@ export default {
       search: "",
       mobileData: false,
       bluetooth: true,
-      isMaximize: true
+      isMaximize: true,
+      imageUrl: ""
     };
   },
   methods: {
@@ -73,8 +75,8 @@ export default {
     },
 
     logout() {
-      this.$store.commit("LOGOUT");
       this.$router.push("/");
+      this.$store.commit("LOGOUT");
       window.sessionStorage.clear();
     },
 
@@ -103,6 +105,9 @@ export default {
         this.$q.electron.remote.BrowserWindow.getFocusedWindow().close();
       }
     }
+  },
+  async created() {
+    this.imageUrl = await getImageUrl(this.$store.state.currentUser.avatar);
   }
 };
 </script>

@@ -51,10 +51,10 @@ export default {
           required: true,
           label: "图片",
           bindProps: row => ({
-            src: row.url,
+            value: row.url,
             style: { width: "100%", height: "200px" }
           }),
-          is: "q-img"
+          is: "cell-image"
         }
       ]
     };

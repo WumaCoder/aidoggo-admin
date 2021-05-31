@@ -2,7 +2,7 @@
   <div @click="onClick">
     <q-field :label="label">
       <template v-slot:control>
-        <q-img style="width:100%;height:300px;" :src="value" />
+        <q-img style="width:100%;height:300px;" :src="imageUrl" />
       </template>
     </q-field>
     <q-dialog v-model="isOpen">
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getUploadUrl, getImage } from "../../utils/image";
+import { getUploadUrl, getImageUrl } from "../../utils/image";
 export default {
   props: {
     value: String,
@@ -31,7 +31,8 @@ export default {
       isOpen: false,
       tempUrl: "",
       formFields: [],
-      resultUrl: ""
+      resultUrl: "",
+      imageUrl: ""
     };
   },
   methods: {
@@ -51,10 +52,13 @@ export default {
       this.resultUrl = this.tempUrl + "/" + uploader.formData.key;
     },
     async onFinish() {
-      console.log(this.resultUrl);
-      const imageUrl = await getImage(this.resultUrl);
-      this.$emit("input", imageUrl);
+      this.imageUrl = await getImageUrl(this.resultUrl);
+      this.$emit("input", this.resultUrl);
     }
+  },
+  async created() {
+    await this.$nextTick();
+    this.imageUrl = await getImageUrl(this.value);
   }
 };
 
