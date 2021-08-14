@@ -12,7 +12,7 @@ Vue.prototype.$SildeBar = "hHh lpR fFf"; // 风格二：lHh lpR fFf
 
 // axios 中请求基地址，如果需要请在 axios/axios-config.js 中打开，下面是跨域代理示例
 Vue.prototype.$baseURL =
-  process.env.NODE_ENV === "development" ? "/api" : "生产环境 API";
+  process.env.NODE_ENV === "development" ? "/api" : "";
 // Vue.prototype.$baseURL = "/api";
 
 // 请求超时时间
